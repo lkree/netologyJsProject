@@ -111,37 +111,34 @@ class Level {
     throw new Error('В actorAt передан не Vector');
   }
 
-  obstacleAt(destinationLocation, objectSize) {
+  obstacleAt(position, size) {
     if (
-      !(destinationLocation instanceof Vector) ||
-      !(objectSize instanceof Vector)) {
+      !(position instanceof Vector) ||
+      !(size instanceof Vector)) {
         throw new Error('В obstacleAt передан не Vector');
       }
 
-      let newXpos = Math.round(destinationLocation.x),
-          newYpos = Math.round(destinationLocation.y),
-          newXsize = Math.round(objectSize.x),
-          newYsize = Math.round(objectSize.y),
-          destinationObject = new Actor(new Vector(newXpos, newYpos), new Vector(newXsize, newYsize));
+      let leftSide = Math.floor(position.x),
+          rightSide = Math.ceil(position.x + size.x),
+          topSide = Math.floor(position.y),
+          bottomSide = Math.ceil(position.y + size.y);
 
     if (
-      destinationObject.left < 0 || 
-      destinationObject.right > this.width || 
-      destinationObject.top < 0
+      leftSide < 0 || 
+      rightSide > this.width || 
+      topSide < 0
     ) {
       return 'wall';
     } 
-    if (destinationObject.bottom > this.height) {
+    if (bottomSide > this.height) {
       return 'lava';
     }
 
-    for (let y = destinationObject.top; y < destinationObject.bottom; y++) {
-      for (let x = destinationObject.left; x < destinationObject.right; x++) {
+    for (let y = topSide; y < bottomSide; y++) {
+      for (let x = leftSide; x < rightSide; x++) {
         const gridLevel = this.grid[y][x];
         if (gridLevel) {
           return gridLevel;
-        } else {
-          return undefined;
         }
       }
     }
